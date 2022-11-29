@@ -112,7 +112,7 @@ const run = async () => {
             res.send(result);
         });
 
-        // booking Get by email 
+        
         app.get('/bookings', async (req, res) => {
             let email = req.query.email;
             const query = { email: email };
