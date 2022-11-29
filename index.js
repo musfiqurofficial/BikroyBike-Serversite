@@ -34,7 +34,6 @@ function verifyJWT(req, res, next) {
     })
 }
 
-//function
 const run = async () => {
     try {
         const productsCollection = client.db('bikroyBikeDB').collection('products');
