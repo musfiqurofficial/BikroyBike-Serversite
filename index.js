@@ -79,7 +79,6 @@ const run = async () => {
 
         });
 
-        // get all seller 
         app.get('/allseller', async (req, res) => {
             const role = req.query.role
             const query = { category: role }
