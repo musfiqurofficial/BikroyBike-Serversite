@@ -112,7 +112,6 @@ const run = async () => {
             res.send(result);
         });
 
-        
         app.get('/bookings', async (req, res) => {
             let email = req.query.email;
             const query = { email: email };
@@ -121,7 +120,7 @@ const run = async () => {
 
         });
 
-        // payment methode 
+        // payment 
         app.post('/create-payment-intent', async (req, res) => {
             const booking = req.body;
             const price = booking.price;
