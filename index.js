@@ -85,8 +85,7 @@ const run = async () => {
             const users = await usersCollection.find(query).toArray();
             res.send(users)
         });
-        
-        
+
         app.put('/allseller/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
@@ -106,7 +105,6 @@ const run = async () => {
             res.send(result);
         })
 
-        // delete booking 
         app.delete('/booking/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
