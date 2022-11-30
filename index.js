@@ -42,7 +42,7 @@ const run = async () => {
         const paymentsCollection = client.db('bikroyBikeDB').collection('payment');
         const usersCollection = client.db('bikroyBikeDB').collection('users');
 
-        app.get('/products',  async (req, res) => {
+        app.get('/products', async (req, res) => {
             const query = {};
             const result = await productsCollection.find(query).toArray();
             res.send(result);
@@ -52,6 +52,12 @@ const run = async () => {
             const result = await categoriesCollection.find(query).toArray();
             res.send(result);
         })
+        //add products 
+        app.post('/products', async (req, res) => {
+            const user = req.body;
+            const result = await productsCollection.insertOne(user);
+            res.send(result);
+        });
         app.get('/product/detail/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id)
@@ -71,6 +77,32 @@ const run = async () => {
             res.send(result);
         })
 
+        // delete product 
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(filter);
+            res.send(result);
+        });
+
+
+        // product get by email 
+        app.get('/myproducts', async (req, res) => {
+            let email = req.query.email;
+            const query = { email: email };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+        });
+
+
+        // delete product 
+        app.delete('/products/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(filter);
+            res.send(result);
+        });
+
         // get all users 
         app.get('/users', async (req, res) => {
             const query = {}
@@ -79,6 +111,7 @@ const run = async () => {
 
         });
 
+        // get all seller 
         app.get('/allseller', async (req, res) => {
             const role = req.query.role
             const query = { category: role }
@@ -86,6 +119,7 @@ const run = async () => {
             res.send(users)
         });
 
+        // make verify seller 
         app.put('/allseller/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
@@ -99,26 +133,12 @@ const run = async () => {
             res.send(result)
         });
 
-        app.get('/user', async (req, res) => {
-            const email = req.query.email
-            const query = { email: email }
-            const users = await usersCollection.findOne(query);
-            res.send(users);
-        });
-
-        app.post('/users', async (req, res) => {
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
-            res.send(result);
-        })
-
-        app.delete('/booking/:id', async (req, res) => {
-            const id = req.params.id;
-            const filter = { _id: ObjectId(id) };
-            const result = await bookingCollection.deleteOne(filter);
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingCollection.insertOne(booking);
             res.send(result);
         });
-
+        // booking Get by email 
         app.get('/bookings', async (req, res) => {
             let email = req.query.email;
             const query = { email: email };
@@ -126,8 +146,22 @@ const run = async () => {
             res.send(booking);
 
         });
+        app.get('/paybooking/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bookingCollection.findOne(filter);
+            res.send(result);
+        });
 
-        // payment 
+        // delete booking 
+        app.delete('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(filter);
+            res.send(result);
+        });
+
+        // payment methode 
         app.post('/create-payment-intent', async (req, res) => {
             const booking = req.body;
             const price = booking.price;
@@ -160,16 +194,6 @@ const run = async () => {
             res.send(result);
         });
 
-
-        //  seller role 
-        app.get('/user/sellar/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email }
-            const person = await usersCollection.findOne(query);
-            res.send({ isSellar: person?.category === 'Seller' })
-        })
-
-
         // make admin role 
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
@@ -178,7 +202,7 @@ const run = async () => {
             res.send({ isAdmin: user?.role === 'admin' })
         })
 
-        app.put('/users/admin/:id', async (req, res) => {
+        app.put('/users/admin/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
@@ -197,6 +221,7 @@ const run = async () => {
             const result = await usersCollection.deleteOne(filter);
             res.send(result);
         });
+
 
     }
     finally {
