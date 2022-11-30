@@ -99,6 +99,13 @@ const run = async () => {
             res.send(result)
         });
 
+        app.get('/user', async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const users = await usersCollection.findOne(query);
+            res.send(users);
+        });
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
